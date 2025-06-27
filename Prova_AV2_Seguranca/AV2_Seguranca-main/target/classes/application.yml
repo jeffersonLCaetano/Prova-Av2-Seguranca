@@ -1,0 +1,69 @@
+# Define a porta em que a aplicação vai rodar
+server:
+  port: 8080
+
+# --- Configuração do Springdoc (Swagger UI) ---
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+
+# --- Configurações Gerais do Spring (AGORA CORRIGIDO) ---
+spring:
+  profiles:        # <-- No mesmo nível de 'application'
+    active: dev
+  application:
+    name: prova
+  # Suas configurações de banco de dados
+  datasource:
+    url: jdbc:mariadb://localhost:3306/loja_produtos # <-- Sua configuração original
+    username: root # <-- Sua configuração original
+    password: "" # <-- Sua configuração original
+  # Suas configurações do JPA/Hibernate
+  jpa:
+    database-platform: org.hibernate.dialect.MariaDBDialect # <-- Sua configuração original
+    hibernate:
+      ddl-auto: update # <-- Sua configuração original
+    show-sql: true
+    properties:
+      hibernate:
+        format_sql: true
+
+# --- O separador '---' inicia um NOVO documento, por isso aqui podemos ter outra chave 'spring' ---
+---
+# --- Configurações que só ativam com o perfil 'dev' (usando H2) ---
+spring:
+  config:
+    activate:
+      on-profile: dev # As configurações abaixo só valem se o perfil 'dev' estiver ativo
+  # Banco de dados em memória H2
+  datasource:
+    url: jdbc:h2:mem:testdb
+    username: sa
+    password: password
+  # Habilitar o console web do H2
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+  jpa:
+    hibernate:
+      ddl-auto: none 
+
+# --- Configuração de Monitoramento (Actuator) ---
+management:
+  endpoints:
+    web:
+      exposure:
+        # Expõe os endpoints de saúde, informações, métricas e o endpoint para o Prometheus
+        include: health,info,metrics,prometheus
+  endpoint:
+    health:
+      show-details: always
+
+# --- Configuração de Segurança e JWT ---
+api:
+  security:
+    jwt:
+      # !! IMPORTANTE !!
+      # Esta é sua chave secreta para assinar os tokens JWT.
+      secret: MGRmN2U5YjVjM2MyYjVkZTY3Y2U5YjVjM2MyYjVkZTY3Y2U5YjVjM2MyYjVkZTY3Y2U5YjVjM2MyYjVkZTY3Y2U5YjVjM2MyYjVkZTY3Cg==
